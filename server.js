@@ -1,3 +1,5 @@
+const { notStrictEqual } = require("assert");
+const { json } = require("express");
 const express = require("express");
 const app = express();
 const fs = require("fs");
@@ -20,6 +22,13 @@ app.get("/api/notes", (req, res) => {
 });
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "./public/index.html"));
+});
+app.post("/api/notes", (req, res) => {
+  res.json(`${req.method} request received to add a note`);
+  const notes = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
+  console.log(notes);
+  const newNote = req.body;
+  notes.push(newNote);
 });
 app.listen(PORT, () =>
   console.log(`server listening on http://localhost:${PORT}`)
